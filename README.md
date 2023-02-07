@@ -82,7 +82,7 @@ And that's up! already have a base image of RO we can use for training or test
 
 REPOSITORY                           TAG             IMAGE ID      CREATED        SIZE
 
-localhost/cro                        8.3.3         05fc28b5ad50  2 minutes ago   4.15 GB
+localhost/cro                        8.3.3         3d5162fe511f  19 hours ago   3.98 GB
 
 
 ### Execution of automated scripts
