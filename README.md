@@ -28,7 +28,7 @@ Prepare a Virtual Machine with RHEL 8.x (Linux Red Hat Enterprise) or Ubuntu wit
        [root@crort /]# dnf -y install hostname libXtst net-tools iputils procps-ng rsync sudo unzip wget
        
     3. Download Tomcat 9.0.48 and install on /opt
-       [root@crort /]# wget -qO- https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.48/bin/apache-tomcat-9.0.48.tar.gz | tar -xzf - -C /opt
+       [root@crort /]# wget -qO- https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.54/bin/apache-tomcat-9.0.54.tar.gz | tar -xzf - -C /opt
        
     4. Download MariaDB 10.5.9 installation rpm's
        [root@crort /]# wget https://downloads.mariadb.com/MariaDB/mariadb-10.5.9/yum/rhel8-amd64/rpms/MariaDB-shared-10.5.9-1.el8.x86_64.rpm
