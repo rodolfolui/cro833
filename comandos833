@@ -1,0 +1,34 @@
+# Copiar los medios de instalación
+[ -d cro833 ] || mkdir -p cro833
+[ -f cro833/Server.tar.gz ] || cp /home/rvasquez/DownloadDirector/CRO833/Server.tar.gz cro833
+[ -f cro833/Validation_Key ] || tar xvf $HOME/DownloadDirector/CRO833/Validation_Key.tar -C cro833
+[ -f cro833/gnulib.zip ] || wget -O cro833/gnulib.zip https://sourceforge.net/projects/gnu-utils/files/binaries/gnulib.zip/download 
+[ -f cro833/ThirdPartyJSLib.zip ] || wget -O cro833/ThirdPartyJSLib.zip https://sourceforge.net/projects/gnu-utils/files/binaries/ThirdPartyJSLib.zip/download
+[ -f cro833/my.cnf ] || cp my.cnf cro833
+[ -f cro833/mariadbencryption.tar.gz ] || cp mariadbencryption.tar.gz cro833
+
+# Crear volumen para albergar los medios de instalacion
+podman volume create cro833
+
+# Subir una instancia de ubuntu y copiar los instaladores
+podman run --rm --name base1 --volume cro833:/install registry.access.redhat.com/ubi8/ubi bash -c "tail -f /dev/null" &
+sleep 5
+podman cp cro833/Server.tar.gz base1:/install/
+podman cp cro833/Validation_Key base1:/install/
+podman cp cro833/gnulib.zip base1:/install/
+podman cp cro833/ThirdPartyJSLib.zip base1:/install/
+podman cp cro833/my.cnf base1:/install/
+#podman cp cro833/mariadbencryption.tar.gz base1:/install/
+podman exec -i -t base1 /bin/bash -c "cd /install/ ; [ -f install.bin ] || tar xvzf Server.tar.gz; rm Server.tar.gz" && podman stop base1 && podman rm base1
+
+# Preparar los prerequisitos de CRO
+podman build -f Dockerfile.cro833 --tag localhost/cro:833
+podman run --rm -v cro833:/install -p 8080:8080 -p 8443:8443 -p 3306:3306 --name crort localhost/cro:833 bash -c "tail -f /dev/null" &
+
+# Crear imagen runtime
+podman exec -it crort /bin/bash -c "/instcro833" && podman commit crort cro:833
+
+# Ejecutar posteriormente
+#podman commit crort cro:8.2.3
+#podman run --rm -it -v cro833:/install -p 8306:8306 -p 8080:8080 -p 8443:8443 --name crort localhost/cro:8.2.3 bash
+#podman run --rm -it -p 8306:8306 -p 8080:8080 -p 8443:8443 --name crort localhost/cro:8.2.3 bash
